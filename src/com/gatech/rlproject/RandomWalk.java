@@ -14,17 +14,19 @@ public class RandomWalk {
 	
 	public static void main(String[] args) {
 		// change seed for different sets of sequences
-		Random randomNum = new Random(1);
+		Random randomNum = new Random(199);
 		TrainingSets t = new TrainingSets();
 		t.genTrainSets(randomNum);
 		
 		ArrayList<ArrayList<String[]>> sets = t.getTrainSets();
-		double[] lambdas = {0.0, 0.1, 0.3, 0.5, 0.7, 1.0};
+		double[] lambdas = {0.0, 0.1, 0.3, 0.5,  0.7,  0.9, 1.0};
 		double[] rmsE = new double[lambdas.length];
 		for (int i = 0; i < lambdas.length; i++) {
 			rmsE[i] = exp1(sets, lambdas[i]);
 		}
+		
 		System.out.println("ln27: RMSE = " + Arrays.toString(rmsE));
+		
 		exp2(sets);
 
 	}
@@ -34,25 +36,40 @@ public class RandomWalk {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/**
+	 * The repeated presentation training paradigm
+	 * 1. Presents a training set to the learning, updates the weight vector
+	 *  only when the learner sees the whole set.
+	 * 2.Each training set was presented repeatedly to each learning procedure 
+	 *   - the procedure converge when no significant changes in weight vector. 
+	 *   - For small alpha, the weight vector always converged in this way, and always to the same final value, independent, of its initial value. 
+	 * @param sets
+	 * @param lambda
+	 * @return
+	 */
 
 	private static double exp1(ArrayList<ArrayList<String[]>> sets, double lambda) {
 		int nstates 	= 5; // number of non-absorbing states (B to F)
 		double[] T = {1.0/6,1.0/3,1.0/2,2.0/3,5.0/6};		// transition possibility= new double[] {1:nstates}/(nstates+1);
 		double[] w		= new double[nstates];  //rand(1,nstates);
 		double[] dw		= new double[nstates];  //zeros(size(w));	% change in w.
-		double alpha	= 0.3;	// learning rate
-		int nSets		= 100;	// number sets of random walks sequences
-		int intervalw	= 10;	// number of walks between weight update.
-		double epsilon = 0.0000001;
+		double alpha	= 0.05;	// learning rate
+		int nSets		= sets.size();	// number sets of random walks sequences
+		double[] rmses	= new double[nSets];
+		double meanRmse	= 0.0;
+		double epsilon = 0.0001;
 		
-		;
-		boolean converged = false;
-		int count = 0;
 		
-		while (!converged) {
-			for (int n = 0; n < nSets; n++) {
-				//System.out.println("ln54: w = " + Arrays.toString(w) );
-				double[] oldw = Arrays.copyOf(w, nstates);
+		
+		for (int n = 0; n < nSets; n++) {
+			boolean converged = false;
+			int count = 0;
+			Arrays.fill(w,0.5);
+			
+			while (!converged) {
+				
+				double[] oldw = Arrays.copyOf(w, w.length);
 				
 				dw = learningFromSet(sets.get(n), nstates, w, lambda);
 				
@@ -61,36 +78,42 @@ public class RandomWalk {
 				for (int i = 0; i < w.length;i++) {
 					w[i] = w[i] + alpha*dw[i];
 				}
-				count++;
-				double deltaW = RMSE(oldw,w);
-				System.out.println("ln64: deltaW = " + deltaW );
 				
-				if (deltaW< epsilon) {
+				double deltaW = RMSE(oldw,w);
+				count++;
+					
+				if (alpha*deltaW < epsilon) {
 					converged = true;
+					System.out.println("ln 88: deltaW = " + deltaW);
+					System.out.println("ln 89: converged in  " + count+ " steps");
+					System.out.println("ln 90: w = " + Arrays.toString(w));
+					
+					
 					break;
 				}
 				
-				
 			}
-		
-			/*
-			if (count >= 100) {
-				converged = true;
-			}
-			*/
+			
+			 rmses[n] = RMSE(w,T);
+			 
+			
 		}
-		
-		double rmse = RMSE(w,T);
-		System.out.println("ln81: w = " + Arrays.toString(w) );
-		System.out.println("ln82: T = " + Arrays.toString(T) );
-		
-		
-		System.out.println("lambda = "+lambda+"; rmse = " + rmse + "; w updated "+ count + " times.");
-		return rmse;
+		meanRmse = calArrayMean(rmses);
+
+		return meanRmse;
 	}
 
+	private static double calArrayMean(double[] m) {
+		double sum = 0;
+	    for (int i = 0; i < m.length; i++) {
+	        sum += m[i];
+	    }
+	    return sum / m.length;
+	}
+
+
 	private static double RMSE(double[] predictions, double[] targets) {
-		double rmse = 0;
+		double rmse = 0.;
         double diff;
         for (int i = 0; i < targets.length; i++) {
                 diff = targets[i] - predictions[i];
@@ -122,7 +145,7 @@ public class RandomWalk {
 			dw = new double[nstates];
 					
 			double[] elast 		= new double[nstates];
-			double[] xnext 		= new double[nstates];;
+			double[] xnext 		= new double[nstates];
 			
 			int seqID = 0;
 			while (seqID < sequence.length-1) { //while walking
