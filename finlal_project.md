@@ -8,3 +8,11 @@ You will present your work at the end of the semester via a short (at most 3 min
 
 Grades will be based on the fidelity of the replication (25%), how well you show you understand the original paper (25%), the quality of your presentation (25%), and your written report (25%).
 
+* description of the experiment replicated
+* how the experiment was implemented
+* the outcome of the experiment
+*  describe how well the results match the results given in the paper
+*  differences
+*  any pitfalls you ran into 
+*  What assumptions did you make? 
+*  Why are these assumptions justified

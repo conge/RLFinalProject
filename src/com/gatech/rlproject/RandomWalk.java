@@ -2,7 +2,6 @@ package com.gatech.rlproject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Random;
 /**
  * Repeat the Random-walk experiments in Sutton 1998 paper
@@ -15,7 +14,7 @@ public class RandomWalk {
 	
 	public static void main(String[] args) {
 		// change seed for different sets of sequences
-		Random randomNum = new Random(199);
+		Random randomNum = new Random(55);
 		TrainingSets t = new TrainingSets();
 		t.genTrainSets(randomNum);
 		ArrayList<ArrayList<String[]>> sets = t.getTrainSets();
@@ -42,7 +41,7 @@ public class RandomWalk {
 			}
 		}
 		System.out.println("ln42: rmseExp2 = " + Arrays.deepToString(rmseExp2));
-
+		System.out.println("ln42: rmseExp2 = " + rmseExp2[0][0] +"; "+ rmseExp2[0][1] + "; " + rmseExp2[0][2]);
 	}
 
 
@@ -57,13 +56,10 @@ public class RandomWalk {
 		double meanRmse	= 0.0;
 		
 		for (int n = 0; n < nSets; n++) {
-			
-			int count = 0;
-			Arrays.fill(w,0.5);
+			Arrays.fill(w,0.5); // initialize weights
 			
 			for (int k = 0; k < sets.get(n).size();k++) {
-				
-				double[] oldw = Arrays.copyOf(w, w.length);
+
 				
 				dw = learningFromSequence(sets.get(n).get(k), nstates, w, lambda);
 				
@@ -73,7 +69,6 @@ public class RandomWalk {
 					w[i] = w[i] + alpha*dw[i];
 				}
 
-				
 			}
 			
 			 rmses[n] = RMSE(w,T);
@@ -85,9 +80,6 @@ public class RandomWalk {
 		return meanRmse;
 		
 	}
-	
-	
-
 
 	/**
 	 * The repeated presentation training paradigm
@@ -110,9 +102,7 @@ public class RandomWalk {
 		int nSets		= sets.size();	// number sets of random walks sequences
 		double[] rmses	= new double[nSets];
 		double meanRmse	= 0.0;
-		double epsilon = 0.001;
-		
-		
+		double epsilon = 0.0005;	
 		
 		for (int n = 0; n < nSets; n++) {
 			boolean converged = false;
@@ -124,6 +114,7 @@ public class RandomWalk {
 				double[] oldw = Arrays.copyOf(w, w.length);
 				
 				dw = learningFromSet(sets.get(n), nstates, w, lambda);	
+				
 				// Update weights w
 				for (int i = 0; i < w.length;i++) {
 					w[i] = w[i] + alpha*dw[i];
@@ -132,15 +123,15 @@ public class RandomWalk {
 				double deltaW = RMSE(oldw,w);
 				count++;
 					
-				System.out.println("Debug: ln 135: deltaW = " + deltaW + "; n = " + n);
-				System.out.println("Debug: ln 144: w = " + Arrays.toString(w));
+				// System.out.println("Debug: ln 135: deltaW = " + deltaW + "; n = " + n);
+				// System.out.println("Debug: ln 144: w = " + Arrays.toString(w));
 				
 				if (deltaW < epsilon) {
 					converged = true;
-					System.out.println("Debug: ln 137: deltaW = " + deltaW + "; n = " + n);
-					System.out.println("Debug: ln 143: converged in  " + count+ " steps");
-					System.out.println("Debug: ln 144: w = " + Arrays.toString(w));
-					System.out.println("Debug: ln 145, T =" + Arrays.toString(T));
+					// System.out.println("Debug: ln 137: deltaW = " + deltaW + "; n = " + n);
+					System.out.println("Debug: ln 133: set #"+n+".Converged in  " + count+ " repeats");
+					//System.out.println("Debug: ln 144: w = " + Arrays.toString(w));
+					//System.out.println("Debug: ln 145, T =" + Arrays.toString(T));
 					System.out.println("");
 					
 					break;
@@ -149,33 +140,11 @@ public class RandomWalk {
 			}
 			
 			 rmses[n] = RMSE(w,T);
-			 
-			
+
 		}
 		meanRmse = calArrayMean(rmses);
 
 		return meanRmse;
-	}
-
-	private static double calArrayMean(double[] m) {
-		double sum = 0;
-	    for (int i = 0; i < m.length; i++) {
-	        sum += m[i];
-	    }
-	    return sum / m.length;
-	}
-
-
-	private static double RMSE(double[] predictions, double[] targets) {
-		double rmse = 0.;
-        double diff;
-        for (int i = 0; i < targets.length; i++) {
-                diff = targets[i] - predictions[i];
-                rmse += diff * diff;
-        }
-        rmse = Math.sqrt(rmse / targets.length);
-        return rmse;
-		
 	}
 
 
@@ -195,13 +164,13 @@ public class RandomWalk {
 			String[] sequence =  set.get(i);
 			double[] newdw = learningFromSequence(sequence, nstates, w, lambda);
 		
-			// accumulate dw
+			// accumulate dw for the sets
 			for (int j = 0; j < dw.length; j ++) {
 				dw[j]= dw[j] + newdw[j];
 			}
-			
-			
+					
 		}
+		// not sure if this is correct or not, but averaging helps with converge
 		for (int i = 0; i < dw.length; i ++) {
 			dw[i]=dw[i]/10.0;
 		}
@@ -266,6 +235,28 @@ public class RandomWalk {
 		return dw;
 	}	
 
+	
+	private static double calArrayMean(double[] m) {
+		double sum = 0;
+	    for (int i = 0; i < m.length; i++) {
+	        sum += m[i];
+	    }
+	    return sum / m.length;
+	}
+
+
+	private static double RMSE(double[] predictions, double[] targets) {
+		double rmse = 0.;
+        double diff;
+        for (int i = 0; i < targets.length; i++) {
+                diff = targets[i] - predictions[i];
+                rmse += diff * diff;
+        }
+        rmse = Math.sqrt(rmse / targets.length);
+        return rmse;
+		
+	}
+
 	private static int idConvert(String string) {
 		if (string.equals("d"))
 			return 3;
@@ -287,8 +278,6 @@ public class RandomWalk {
 	}
 
 
-	
-
 	private static double weightedSum(double[] a, double[] b) {
 		double value	= 0.0;
 	    double sum		= 0.0 ;
@@ -303,8 +292,5 @@ public class RandomWalk {
 	    return sum;
 		
 	}
-				
 
-			
-		
 }
