@@ -16,3 +16,11 @@ Grades will be based on the fidelity of the replication (25%), how well you show
 *  any pitfalls you ran into 
 *  What assumptions did you make? 
 *  Why are these assumptions justified
+
+
+----
+
+TD-Lambda, a machine learning algorithm designed for reinforcement learning problems, is invented by Richard S. Sutton. In his paper introducing TD-lambda (Sutton, 1988), Sutton provided a 5-step random walking problem as an example and performed two computational experiments to demostrate the performance of the method. The purpose of this report is to replicate the experiments using the method discribed in Sutton's paper.
+
+The 5-step random walking example consists of a Markov chain of 5 states (B, C, D, E, and F) plus two absorbing states (A and G, Figure 1). The reward for states A and G are 0 and 1, respectively. For the non-absorbing states, the transition probabilities of moving to the right are 0.5, and the ideal probability of a walk ending in state G from each state is:	T = {1/6 2/6 3/6 4/6 5/6}, (e.g. p(G|B)=1/6). The goal is to learn the estimated transition probabilities as a weight vector w over a series of random walks. The RMS error between the ideal predictions and the estimated weight vector w is used to evaluate the performance fo the TD-lambda method.
+
