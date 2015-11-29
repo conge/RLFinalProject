@@ -19,7 +19,6 @@ Grades will be based on the fidelity of the replication (25%), how well you show
 
 
 ----
-
 TD-Lambda (TD(λ)), a machine learning algorithm designed for reinforcement learning problems using temporal information, is invented by Richard S. Sutton. In his paper introducing TD(λ) (Sutton, 1988), Sutton provided a 5-step random walking problem as an example and performed two computational experiments to demonstrate the performance of the method. The purpose of this report is to replicate the experiments using the method described in Sutton's paper.
 
 The 5-step random walking example consists of a Markov chain of 5 states (B, C, D, E, and F) plus two absorbing states (A and G, Figure 1). The reward for states A and G are 0 and 1, respectively. For the non-absorbing states, the transition probabilities of moving to the right and to the right are both 0.5, and the ideal probability of a walk ending in state G from each state is:	T = {1/6 2/6 3/6 4/6 5/6}, (e.g. p(G|B) = 1/6). The goal is to learn the estimated transition probabilities (a weight vector w) over a series of random walks using the TD method. 
@@ -38,9 +37,8 @@ Although Sutton mentioned that the algorithm will always converge if small learn
 
 In the repeated presentation experiment,  the performance declines as λ increases with TD(0) method has the best performance. The error increases rapidly as λ approaching to 1 (Figure 2) with TD(1) has the worst performance.
 
-As shown in figure 3, the value of learning rate has evident effects on the performance of TD(λ) and most of the TD(λ) performed the best when α = 0.2 (the best α in Sutton's original paper is 0.3). Figure 4 shows the RMS error level of TD(λ) when the best λ is applied .  
-
-
+As shown in figure 3, the value of learning rate has evident effects on the performance of TD(λ) and most of the TD(λ) performed the best when α = 0.2 (the best α in Sutton's original paper is 0.3). Figure 4 shows the best RMS error level of for each λ in TD(λ) when the best α is applied to the corresponding λ. In this case, TD(0) does not have the best performance any more, and TD(0.2) seems to have the best performance.
 
 ## Discussion
+
 
