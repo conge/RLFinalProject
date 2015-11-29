@@ -24,3 +24,4 @@ TD-Lambda, a machine learning algorithm designed for reinforcement learning prob
 
 The 5-step random walking example consists of a Markov chain of 5 states (B, C, D, E, and F) plus two absorbing states (A and G, Figure 1). The reward for states A and G are 0 and 1, respectively. For the non-absorbing states, the transition probabilities of moving to the right are 0.5, and the ideal probability of a walk ending in state G from each state is:	T = {1/6 2/6 3/6 4/6 5/6}, (e.g. p(G|B)=1/6). The goal is to learn the estimated transition probabilities as a weight vector w over a series of random walks. The RMS error between the ideal predictions and the estimated weight vector w is used to evaluate the performance fo the TD-lambda method.
 
+100 training sets, each consists of 10 radom walking sequences, were generated for the two computational experiments. In experiment 1, each training set was fed to the learning algorithm repeatedly to update w until converge.

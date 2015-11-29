@@ -18,26 +18,30 @@ public class RandomWalk {
 		TrainingSets t = new TrainingSets();
 		t.genTrainSets(randomNum);
 		ArrayList<ArrayList<String[]>> sets = t.getTrainSets();
+
+		
+		double[] lambdas1	= {0.0, 0.1, 0.3, 0.5,  0.7,  0.9, 1.0};
+		double[] lambdas2	= {.0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1.0};
+		double[] alphas		= {0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6};
+		
+		double[] rmseExp1 = new double[lambdas1.length];
+		double[][] rmseExp2 = new double[lambdas2.length][alphas.length];
+		
 		
 		/*
 		 * Experiment 1
 		 */
-		
-		double[] lambdas	= {0.0, 0.1, 0.3, 0.5,  0.7,  0.9, 1.0};
-		double[] alphas		= {0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6};
-		
-		double[] rmseExp1 = new double[lambdas.length];
-		double[][] rmseExp2 = new double[lambdas.length][alphas.length];
-		
-		for (int i = 0; i < lambdas.length; i++) {
-			rmseExp1[i] = exp1(sets, lambdas[i]);
+		for (int i = 0; i < lambdas1.length; i++) {
+			rmseExp1[i] = exp1(sets, lambdas1[i]);
 		}		
 		System.out.println("ln36: rmseExp1 = " + Arrays.toString(rmseExp1));
-		
-		for (int i = 0; i < lambdas.length; i++) {
+		/*
+		 * Experiment 2
+		 */
+		for (int i = 0; i < lambdas2.length; i++) {
 			
 			for (int j = 0; j < alphas.length; j++) {
-				rmseExp2[i][j] = exp2(sets, lambdas[i], alphas[j]);
+				rmseExp2[i][j] = exp2(sets, lambdas2[i], alphas[j]);
 			}
 		}
 		System.out.println("ln42: rmseExp2 = " + Arrays.deepToString(rmseExp2));
@@ -123,15 +127,9 @@ public class RandomWalk {
 				double deltaW = RMSE(oldw,w);
 				count++;
 					
-				// System.out.println("Debug: ln 135: deltaW = " + deltaW + "; n = " + n);
-				// System.out.println("Debug: ln 144: w = " + Arrays.toString(w));
-				
 				if (deltaW < epsilon) {
 					converged = true;
-					// System.out.println("Debug: ln 137: deltaW = " + deltaW + "; n = " + n);
 					System.out.println("Debug: ln 133: set #"+n+".Converged in  " + count+ " repeats");
-					//System.out.println("Debug: ln 144: w = " + Arrays.toString(w));
-					//System.out.println("Debug: ln 145, T =" + Arrays.toString(T));
 					System.out.println("");
 					
 					break;
