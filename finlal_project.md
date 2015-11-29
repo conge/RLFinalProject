@@ -41,4 +41,6 @@ As shown in figure 3, the value of learning rate has evident effects on the perf
 
 ## Discussion
 
+## Reference
 
+Sutton, R. S. (1988). Learning to predict by the methods of temporal differences. *Machine learning*, *3*(1), 9-44.
