@@ -1,4 +1,7 @@
-# Finlal Project
+Please see the finalProject.md for report, [here](https://github.com/conge/RLFinalProject/tree/master/src/com/gatech/rlproject) for code of the experiment. Vidos presentation is the VideoPresentation_RL_Fall2015.mp4 file.
+
+
+# Finlal Project Problem
 
 One aspect of research in reinforcement learning (or any scientific field) is the replication of previously published results. One benefit to replication is to aid your own understanding of the results. Another is that it puts you in a good position for being able to extend and compare new contributions to what’s in the existing literature. Replication can be challenging. Researchers often find that important parameters needed to replicate results from papers are not stated in papers or that the procedures stated in papers have ambiguity or subtle errors. Sometimes obtaining the same pattern of results isn’t possible.
 
